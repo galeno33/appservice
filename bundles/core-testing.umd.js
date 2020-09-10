@@ -3,9 +3,43 @@
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
-import { ApplicationInitStatus, Compiler, Component, Injectable, InjectionToken, Injector, NgModule, NgZone, Optional, RendererFactory2, SkipSelf, getDebugNode, ɵclearOverrides, ɵoverrideComponentView, ɵoverrideProvider, ɵstringify } from '@angular/core';
-import { __extends } from 'tslib';
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core')) :
+	typeof define === 'function' && define.amd ? define('@angular/core/testing', ['exports', '@angular/core'], factory) :
+	(factory((global.ng = global.ng || {}, global.ng.core = global.ng.core || {}, global.ng.core.testing = {}),global.ng.core));
+}(this, (function (exports,_angular_core) { 'use strict';
 
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = Object.setPrototypeOf ||
+    ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+    function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+/**
+ * @license Angular v5.2.11
+ * (c) 2010-2018 Google, Inc. https://angular.io/
+ * License: MIT
+ */
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.
@@ -135,7 +169,7 @@ var ComponentFixture = /** @class */ (function () {
         this._onErrorSubscription = null;
         this.changeDetectorRef = componentRef.changeDetectorRef;
         this.elementRef = componentRef.location;
-        this.debugElement = getDebugNode(this.elementRef.nativeElement);
+        this.debugElement = _angular_core.getDebugNode(this.elementRef.nativeElement);
         this.componentInstance = componentRef.instance;
         this.nativeElement = this.elementRef.nativeElement;
         this.componentRef = componentRef;
@@ -289,7 +323,7 @@ var ComponentFixture = /** @class */ (function () {
     };
     ComponentFixture.prototype._getRenderer = function () {
         if (this._renderer === undefined) {
-            this._renderer = this.componentRef.injector.get(RendererFactory2, null);
+            this._renderer = this.componentRef.injector.get(_angular_core.RendererFactory2, null);
         }
         return this._renderer;
     };
@@ -591,12 +625,12 @@ var TestingCompiler = /** @class */ (function (_super) {
        */
     function (error) { throw unimplemented(); };
     TestingCompiler.decorators = [
-        { type: Injectable },
+        { type: _angular_core.Injectable },
     ];
     /** @nocollapse */
     TestingCompiler.ctorParameters = function () { return []; };
     return TestingCompiler;
-}(Compiler));
+}(_angular_core.Compiler));
 /**
  * A factory for creating a Compiler
  *
@@ -631,11 +665,11 @@ var _nextRootElementId = 0;
 /**
  * @experimental
  */
-var ComponentFixtureAutoDetect = new InjectionToken('ComponentFixtureAutoDetect');
+var ComponentFixtureAutoDetect = new _angular_core.InjectionToken('ComponentFixtureAutoDetect');
 /**
  * @experimental
  */
-var ComponentFixtureNoNgZone = new InjectionToken('ComponentFixtureNoNgZone');
+var ComponentFixtureNoNgZone = new _angular_core.InjectionToken('ComponentFixtureNoNgZone');
 /**
  * @whatItDoes Configures and initializes environment for unit testing and provides methods for
  * creating components and services in unit tests.
@@ -830,7 +864,7 @@ var TestBed = /** @class */ (function () {
         return TestBed;
     };
     TestBed.get = function (token, notFoundValue) {
-        if (notFoundValue === void 0) { notFoundValue = Injector.THROW_IF_NOT_FOUND; }
+        if (notFoundValue === void 0) { notFoundValue = _angular_core.Injector.THROW_IF_NOT_FOUND; }
         return getTestBed().get(token, notFoundValue);
     };
     TestBed.createComponent = function (component) {
@@ -907,7 +941,7 @@ var TestBed = /** @class */ (function () {
         this._testEnvAotSummaries = function () { return []; };
     };
     TestBed.prototype.resetTestingModule = function () {
-        ɵclearOverrides();
+        _angular_core.ɵclearOverrides();
         this._aotSummaries = [];
         this._templateOverrides = [];
         this._compiler = (null);
@@ -983,7 +1017,7 @@ var TestBed = /** @class */ (function () {
             catch (e) {
                 var errorCompType = this._compiler.getComponentFromError(e);
                 if (errorCompType) {
-                    throw new Error("This test module uses the component " + ɵstringify(errorCompType) + " which is using a \"templateUrl\" or \"styleUrls\", but they were never compiled. " +
+                    throw new Error("This test module uses the component " + _angular_core.ɵstringify(errorCompType) + " which is using a \"templateUrl\" or \"styleUrls\", but they were never compiled. " +
                         "Please call \"TestBed.compileComponents\" before your test.");
                 }
                 else {
@@ -994,11 +1028,11 @@ var TestBed = /** @class */ (function () {
         for (var _i = 0, _a = this._templateOverrides; _i < _a.length; _i++) {
             var _b = _a[_i], component = _b.component, templateOf = _b.templateOf;
             var compFactory = this._compiler.getComponentFactory(templateOf);
-            ɵoverrideComponentView(component, compFactory);
+            _angular_core.ɵoverrideComponentView(component, compFactory);
         }
-        var ngZone = new NgZone({ enableLongStackTrace: true });
-        var providers = [{ provide: NgZone, useValue: ngZone }];
-        var ngZoneInjector = Injector.create({
+        var ngZone = new _angular_core.NgZone({ enableLongStackTrace: true });
+        var providers = [{ provide: _angular_core.NgZone, useValue: ngZone }];
+        var ngZoneInjector = _angular_core.Injector.create({
             providers: providers,
             parent: this.platform.injector,
             name: this._moduleFactory.moduleType.name
@@ -1008,7 +1042,7 @@ var TestBed = /** @class */ (function () {
         // before accessing it.
         // ApplicationInitStatus.runInitializers() is marked @internal to core. So casting to any
         // before accessing it.
-        this._moduleRef.injector.get(ApplicationInitStatus).runInitializers();
+        this._moduleRef.injector.get(_angular_core.ApplicationInitStatus).runInitializers();
         this._instantiated = true;
     };
     TestBed.prototype._createCompilerAndModule = function () {
@@ -1021,7 +1055,7 @@ var TestBed = /** @class */ (function () {
             function DynamicTestModule() {
             }
             DynamicTestModule.decorators = [
-                { type: NgModule, args: [{ providers: providers, declarations: declarations, imports: imports, schemas: schemas },] },
+                { type: _angular_core.NgModule, args: [{ providers: providers, declarations: declarations, imports: imports, schemas: schemas },] },
             ];
             /** @nocollapse */
             DynamicTestModule.ctorParameters = function () { return []; };
@@ -1046,7 +1080,7 @@ var TestBed = /** @class */ (function () {
         }
     };
     TestBed.prototype.get = function (token, notFoundValue) {
-        if (notFoundValue === void 0) { notFoundValue = Injector.THROW_IF_NOT_FOUND; }
+        if (notFoundValue === void 0) { notFoundValue = _angular_core.Injector.THROW_IF_NOT_FOUND; }
         this._initIfNeeded();
         if (token === TestBed) {
             return this;
@@ -1101,10 +1135,10 @@ var TestBed = /** @class */ (function () {
             var depToken;
             if (Array.isArray(dep)) {
                 dep.forEach(function (entry) {
-                    if (entry instanceof Optional) {
+                    if (entry instanceof _angular_core.Optional) {
                         depFlags |= 2 /* Optional */;
                     }
-                    else if (entry instanceof SkipSelf) {
+                    else if (entry instanceof _angular_core.SkipSelf) {
                         depFlags |= 1 /* SkipSelf */;
                     }
                     else {
@@ -1117,7 +1151,7 @@ var TestBed = /** @class */ (function () {
             }
             return [depFlags, depToken];
         });
-        ɵoverrideProvider({ token: token, flags: flags, deps: deps, value: value, deprecatedBehavior: deprecated });
+        _angular_core.ɵoverrideProvider({ token: token, flags: flags, deps: deps, value: value, deprecatedBehavior: deprecated });
     };
     TestBed.prototype.overrideTemplateUsingTestingModule = function (component, template) {
         this._assertNotInstantiated('overrideTemplateUsingTestingModule', 'override template');
@@ -1125,7 +1159,7 @@ var TestBed = /** @class */ (function () {
             function OverrideComponent() {
             }
             OverrideComponent.decorators = [
-                { type: Component, args: [{ selector: 'empty', template: template },] },
+                { type: _angular_core.Component, args: [{ selector: 'empty', template: template },] },
             ];
             /** @nocollapse */
             OverrideComponent.ctorParameters = function () { return []; };
@@ -1138,16 +1172,16 @@ var TestBed = /** @class */ (function () {
         this._initIfNeeded();
         var componentFactory = this._compiler.getComponentFactory(component);
         if (!componentFactory) {
-            throw new Error("Cannot create the component " + ɵstringify(component) + " as it was not imported into the testing module!");
+            throw new Error("Cannot create the component " + _angular_core.ɵstringify(component) + " as it was not imported into the testing module!");
         }
         var noNgZone = this.get(ComponentFixtureNoNgZone, false);
         var autoDetect = this.get(ComponentFixtureAutoDetect, false);
-        var ngZone = noNgZone ? null : this.get(NgZone, null);
+        var ngZone = noNgZone ? null : this.get(_angular_core.NgZone, null);
         var testComponentRenderer = this.get(TestComponentRenderer);
         var rootElId = "root" + _nextRootElementId++;
         testComponentRenderer.insertRootElement(rootElId);
         var initComponent = function () {
-            var componentRef = componentFactory.create(Injector.NULL, [], "#" + rootElId, _this._moduleRef);
+            var componentRef = componentFactory.create(_angular_core.Injector.NULL, [], "#" + rootElId, _this._moduleRef);
             return new ComponentFixture(componentRef, ngZone, autoDetect);
         };
         var fixture = !ngZone ? initComponent() : ngZone.run(initComponent);
@@ -1263,35 +1297,27 @@ if (_global$1.beforeEach) {
 // work.
 var __core_private_testing_placeholder__ = '';
 
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
+exports.async = async;
+exports.ComponentFixture = ComponentFixture;
+exports.resetFakeAsyncZone = resetFakeAsyncZone;
+exports.fakeAsync = fakeAsync;
+exports.tick = tick;
+exports.flush = flush;
+exports.discardPeriodicTasks = discardPeriodicTasks;
+exports.flushMicrotasks = flushMicrotasks;
+exports.TestComponentRenderer = TestComponentRenderer;
+exports.ComponentFixtureAutoDetect = ComponentFixtureAutoDetect;
+exports.ComponentFixtureNoNgZone = ComponentFixtureNoNgZone;
+exports.TestBed = TestBed;
+exports.getTestBed = getTestBed;
+exports.inject = inject;
+exports.InjectSetupWrapper = InjectSetupWrapper;
+exports.withModule = withModule;
+exports.__core_private_testing_placeholder__ = __core_private_testing_placeholder__;
+exports.ɵTestingCompiler = TestingCompiler;
+exports.ɵTestingCompilerFactory = TestingCompilerFactory;
 
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
+Object.defineProperty(exports, '__esModule', { value: true });
 
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-
-// This file only reexports content of the `src` folder. Keep it that way.
-
-/**
- * Generated bundle index. Do not edit.
- */
-
-export { async, ComponentFixture, resetFakeAsyncZone, fakeAsync, tick, flush, discardPeriodicTasks, flushMicrotasks, TestComponentRenderer, ComponentFixtureAutoDetect, ComponentFixtureNoNgZone, TestBed, getTestBed, inject, InjectSetupWrapper, withModule, __core_private_testing_placeholder__, TestingCompiler as ɵTestingCompiler, TestingCompilerFactory as ɵTestingCompilerFactory };
-//# sourceMappingURL=testing.js.map
+})));
+//# sourceMappingURL=core-testing.umd.js.map
