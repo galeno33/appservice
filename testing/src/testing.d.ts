@@ -8,7 +8,20 @@
 /**
  * @module
  * @description
- * Entry point for all public APIs of the common/testing package.
+ * Entry point for all APIs of the compiler package.
+ *
+ * <div class="callout is-critical">
+ *   <header>Unstable APIs</header>
+ *   <p>
+ *     All compiler apis are currently considered experimental and private!
+ *   </p>
+ *   <p>
+ *     We expect the APIs in this package to keep on changing. Do not rely on them.
+ *   </p>
+ * </div>
  */
-export { SpyLocation } from './location_mock';
-export { MockLocationStrategy } from './mock_location_strategy';
+export * from './resource_loader_mock';
+export * from './schema_registry_mock';
+export * from './directive_resolver_mock';
+export * from './ng_module_resolver_mock';
+export * from './pipe_resolver_mock';

@@ -1,20 +1,20 @@
 {
   "_args": [
     [
-      "@angular/common@5.2.11",
+      "@angular/compiler@5.2.11",
       "/home/galeno/Documentos/appservice"
     ]
   ],
-  "_from": "@angular/common@5.2.11",
+  "_from": "@angular/compiler@5.2.11",
   "_hasShrinkwrap": false,
-  "_id": "@angular/common@5.2.11",
+  "_id": "@angular/compiler@5.2.11",
   "_inCache": true,
   "_installable": true,
-  "_location": "/@angular/common",
+  "_location": "/@angular/compiler",
   "_nodeVersion": "8.9.2",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/common_5.2.11_1526507677961_0.7616962137144094"
+    "tmp": "tmp/compiler_5.2.11_1526507687648_0.015307049084785973"
   },
   "_npmUser": {
     "email": "devops+npm@angular.io",
@@ -23,8 +23,8 @@
   "_npmVersion": "5.5.1",
   "_phantomChildren": {},
   "_requested": {
-    "name": "@angular/common",
-    "raw": "@angular/common@5.2.11",
+    "name": "@angular/compiler",
+    "raw": "@angular/compiler@5.2.11",
     "rawSpec": "5.2.11",
     "scope": "@angular",
     "spec": "5.2.11",
@@ -33,10 +33,10 @@
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/@angular/common/-/common-5.2.11.tgz",
-  "_shasum": "ee7520b02510a2868f30b1f91897102d48324edf",
+  "_resolved": "https://registry.npmjs.org/@angular/compiler/-/compiler-5.2.11.tgz",
+  "_shasum": "ca2c38cda6ddde52b5948b8cff6551ff19d5e9de",
   "_shrinkwrap": null,
-  "_spec": "@angular/common@5.2.11",
+  "_spec": "@angular/compiler@5.2.11",
   "_where": "/home/galeno/Documentos/appservice",
   "author": {
     "name": "angular"
@@ -47,40 +47,36 @@
   "dependencies": {
     "tslib": "^1.7.1"
   },
-  "description": "Angular - commonly needed directives and services",
+  "description": "Angular - the compiler library",
   "devDependencies": {},
   "directories": {},
   "dist": {
-    "fileCount": 3259,
-    "integrity": "sha512-LniJjGAeftUJDJh+2+LEjltcGen08C/VMxQ/eUYmesytKy1sN+MWzh3GbpKfEWtWmyUsYTG9lAAJNo3L3jPwsw==",
-    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJa/KieCRA9TVsSAnZWagAAbrkP/3AOsc7SwHzprYHomtfD\nw53aPwgH8qJFU4jhX6H84ojmq48kvuA/SDFGQaCuWlGzbIa8r2fwIblR8i7X\nP35q2lgEsiwZsAFlq3cyKaiMXNiIAlp9lJaUTg5zCfnAo24GIYCFWA2+8Vwz\nayHJa+FSfjxnMWj7yg02sYnZInWnBK3pwNYQGEsjAan8iFNSebexuSA9qMLW\n3xYmUVyERpR2Km2H+n2dk+1oFZQv5rkG64QirOtF1zD79eNQQnVvZkcRP3oX\nR10Q44akqQcLcEYEXwDBBcMjqKrXjFo/Adr3mXfYQ/RvdF7/YhuRmGb1UYOG\nK73HJkmWmfETwo3INqMNzmPAmcfCwgE5GuSdILpyQsFV1z/nxFD2/PBf83/D\noDBP9geF+p8qItR1ZGdAPW48fBQLSDDV/k6t+1J8dqYOQv083LvIZSkm4kqI\nGAig/gu+cImFKd/AJ45DefPBuyIyUxt2zhfu7p+ZdUSB4AEUt7NN5YygdIiq\n4Aze+dqkFiuGRTDV17z6GTpDK2Jt8pFEOd85kMl3LU/Q5Fu6frGwHOsKGtzS\nlbkubnn8nmK6g67Y8SiyBrpKhiGMYU1fyMPFeiV5iKgaxpjSJm47abAhtU0j\nNyoNp6kinIjMxw0/dgixgrWOBFKy7XGpWnTOBbh2IFGiNcDIatqZpugHxcYl\nsREN\r\n=hcjR\r\n-----END PGP SIGNATURE-----\r\n",
-    "shasum": "ee7520b02510a2868f30b1f91897102d48324edf",
-    "tarball": "https://registry.npmjs.org/@angular/common/-/common-5.2.11.tgz",
-    "unpackedSize": 7628305
+    "fileCount": 123,
+    "integrity": "sha512-ICvB1ud1mxaXUYLb8vhJqiLhGBVocAZGxoHTglv6hMkbrRYcnlB3FZJFOzBvtj+krkd1jamoYLI43UAmesqQ6Q==",
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJa/KioCRA9TVsSAnZWagAAzA8QAJn867Y4mcMJLw7lHHGo\n8dsbNaXfi+t4Lz02r8IzdzNqLQnVXxwltakh27boCZ9C85Jj8V9N0/BjRIdY\nvm5/dNwz4tC1V/wMF+4NcS5VuXUPZlRclNHycUUTfLrCgRd5CD9g+Nb6jRrw\nX2BilgvPpNuJ/2goLakODSCUNjf+ag6+3OiRDx8tQAAI6SQVOX/5VSvH5HM0\nJb3NnyZd0TP9/DM+pbS+u1ZHd0ys/bClSISv08EUdhtRRsRlEHNwOleHk+iN\nrqMyG65AXTfW/t3IZAqAmSKhHRfO3jWChisEs1X3qSULs2RVorVjI2Ms6COj\n8rQQ3Tc4cWQmyD8Sdfy2XXXN9tZ4ExQ4+w9v1jYNQDrHoBV4tgSDPo45LqNT\nROF4U3kcWNHktPUyNBkiqQuAmZouRl5qiOlHfA1aa34ZHwAVkxOKI0T9dFtZ\nIdTT0Qs31mOGBz2ZFULt4iaUwGWYjXuJmuiS9L2/YPApx7Hp8be/YopwFKDH\naPFww+veqpVjQHRPFEY4llPiMKpg0VpdJp5yK2E82JpVACza6zSYKp1xHSpJ\na14miM8jyKj3O0D9VXM9WbOutkqIiloPAb4bWtAjWQ4rxQjjoZnk+wExtz4n\nClc1cGqY6HVBhp4EoruuG+iEdAUFlJlBIem8S89FKkdkkiZNEx1sx35yHJbT\n4vfQ\r\n=K4yu\r\n-----END PGP SIGNATURE-----\r\n",
+    "shasum": "ca2c38cda6ddde52b5948b8cff6551ff19d5e9de",
+    "tarball": "https://registry.npmjs.org/@angular/compiler/-/compiler-5.2.11.tgz",
+    "unpackedSize": 12572505
   },
-  "es2015": "./esm2015/common.js",
+  "es2015": "./esm2015/compiler.js",
   "homepage": "https://github.com/angular/angular#readme",
   "license": "MIT",
-  "main": "./bundles/common.umd.js",
+  "main": "./bundles/compiler.umd.js",
   "maintainers": [
     {
       "name": "angular",
       "email": "devops+npm@angular.io"
     }
   ],
-  "module": "./esm5/common.js",
-  "name": "@angular/common",
+  "module": "./esm5/compiler.js",
+  "name": "@angular/compiler",
   "optionalDependencies": {},
-  "peerDependencies": {
-    "@angular/core": "5.2.11",
-    "rxjs": "^5.5.0"
-  },
   "readme": "Angular\n=======\n\nThe sources for this package are in the main [Angular](https://github.com/angular/angular) repo. Please file issues and pull requests against that repo.\n\nLicense: MIT\n",
   "readmeFilename": "README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/angular/angular.git"
   },
-  "typings": "./common.d.ts",
+  "typings": "./compiler.d.ts",
   "version": "5.2.11"
 }
