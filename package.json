@@ -1,20 +1,20 @@
 {
   "_args": [
     [
-      "@angular/compiler@5.2.11",
+      "@angular/compiler-cli@5.2.11",
       "/home/galeno/Documentos/appservice"
     ]
   ],
-  "_from": "@angular/compiler@5.2.11",
+  "_from": "@angular/compiler-cli@5.2.11",
   "_hasShrinkwrap": false,
-  "_id": "@angular/compiler@5.2.11",
+  "_id": "@angular/compiler-cli@5.2.11",
   "_inCache": true,
   "_installable": true,
-  "_location": "/@angular/compiler",
+  "_location": "/@angular/compiler-cli",
   "_nodeVersion": "8.9.2",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/compiler_5.2.11_1526507687648_0.015307049084785973"
+    "tmp": "tmp/compiler-cli_5.2.11_1526507695947_0.8870622569721531"
   },
   "_npmUser": {
     "email": "devops+npm@angular.io",
@@ -23,8 +23,8 @@
   "_npmVersion": "5.5.1",
   "_phantomChildren": {},
   "_requested": {
-    "name": "@angular/compiler",
-    "raw": "@angular/compiler@5.2.11",
+    "name": "@angular/compiler-cli",
+    "raw": "@angular/compiler-cli@5.2.11",
     "rawSpec": "5.2.11",
     "scope": "@angular",
     "spec": "5.2.11",
@@ -33,50 +33,72 @@
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/@angular/compiler/-/compiler-5.2.11.tgz",
-  "_shasum": "ca2c38cda6ddde52b5948b8cff6551ff19d5e9de",
+  "_resolved": "https://registry.npmjs.org/@angular/compiler-cli/-/compiler-cli-5.2.11.tgz",
+  "_shasum": "71a2885ac394a3c7a407c6ba0b920b52d73add99",
   "_shrinkwrap": null,
-  "_spec": "@angular/compiler@5.2.11",
+  "_spec": "@angular/compiler-cli@5.2.11",
   "_where": "/home/galeno/Documentos/appservice",
-  "author": {
-    "name": "angular"
+  "bin": {
+    "ng-xi18n": "./src/extract_i18n.js",
+    "ngc": "./src/main.js"
   },
   "bugs": {
     "url": "https://github.com/angular/angular/issues"
   },
+  "contributors": [
+    {
+      "name": "Tobias Bosch",
+      "email": "tbosch@google.com",
+      "url": "https://angular.io/"
+    },
+    {
+      "name": "Alex Eagle",
+      "email": "alexeagle@google.com",
+      "url": "https://angular.io/"
+    }
+  ],
   "dependencies": {
-    "tslib": "^1.7.1"
+    "chokidar": "^1.4.2",
+    "minimist": "^1.2.0",
+    "reflect-metadata": "^0.1.2",
+    "tsickle": "^0.27.2"
   },
-  "description": "Angular - the compiler library",
+  "description": "Angular - the compiler CLI for Node.js",
   "devDependencies": {},
   "directories": {},
   "dist": {
-    "fileCount": 123,
-    "integrity": "sha512-ICvB1ud1mxaXUYLb8vhJqiLhGBVocAZGxoHTglv6hMkbrRYcnlB3FZJFOzBvtj+krkd1jamoYLI43UAmesqQ6Q==",
-    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJa/KioCRA9TVsSAnZWagAAzA8QAJn867Y4mcMJLw7lHHGo\n8dsbNaXfi+t4Lz02r8IzdzNqLQnVXxwltakh27boCZ9C85Jj8V9N0/BjRIdY\nvm5/dNwz4tC1V/wMF+4NcS5VuXUPZlRclNHycUUTfLrCgRd5CD9g+Nb6jRrw\nX2BilgvPpNuJ/2goLakODSCUNjf+ag6+3OiRDx8tQAAI6SQVOX/5VSvH5HM0\nJb3NnyZd0TP9/DM+pbS+u1ZHd0ys/bClSISv08EUdhtRRsRlEHNwOleHk+iN\nrqMyG65AXTfW/t3IZAqAmSKhHRfO3jWChisEs1X3qSULs2RVorVjI2Ms6COj\n8rQQ3Tc4cWQmyD8Sdfy2XXXN9tZ4ExQ4+w9v1jYNQDrHoBV4tgSDPo45LqNT\nROF4U3kcWNHktPUyNBkiqQuAmZouRl5qiOlHfA1aa34ZHwAVkxOKI0T9dFtZ\nIdTT0Qs31mOGBz2ZFULt4iaUwGWYjXuJmuiS9L2/YPApx7Hp8be/YopwFKDH\naPFww+veqpVjQHRPFEY4llPiMKpg0VpdJp5yK2E82JpVACza6zSYKp1xHSpJ\na14miM8jyKj3O0D9VXM9WbOutkqIiloPAb4bWtAjWQ4rxQjjoZnk+wExtz4n\nClc1cGqY6HVBhp4EoruuG+iEdAUFlJlBIem8S89FKkdkkiZNEx1sx35yHJbT\n4vfQ\r\n=K4yu\r\n-----END PGP SIGNATURE-----\r\n",
-    "shasum": "ca2c38cda6ddde52b5948b8cff6551ff19d5e9de",
-    "tarball": "https://registry.npmjs.org/@angular/compiler/-/compiler-5.2.11.tgz",
-    "unpackedSize": 12572505
+    "fileCount": 101,
+    "integrity": "sha512-dwrQ0yxoCM/XzKzlm7pTsyg4/6ECjT9emZufGj8t12bLMO8NDn1IJOsqXJA1+onEgQKhlr0Ziwi+96TvDTb1Cg==",
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJa/KiwCRA9TVsSAnZWagAA3vkP/jMfur2B24p2o4BLXGtz\nsbj8ZuQ9K3NPgbcRJrjZKZQp3s+WEyO1FVFGOqFi2OP6uJK8K9ItCYDKzHH5\nJpsvcmESBaWxFuHH9mSBEjiqeQrxp8HqZIUkP8d+U2tQS1phVW5sH132DQP+\n9cKIcTOWyQ+YEGnEf0pj7fHhTfA7WWHl5PzqUoQ0Q/RQ7cjz9GcnbkvZ3a0I\nkDTyGYO4xkncqrr4vtVSwn18cSvzGx79IbnKYVlIhVp99Q5nTPt7OZ5bttgK\n7VMYtuCIj18Dzj0nCN489L8A6Jq4hjGEt6cKpSpzQlbGxb/3M1+xm4HA1A1n\nuPASO0MotlOdG95kxfY+M5PnW3rllA8M6hxZd1GMp860EycPoKwObHCLMmlG\nBQCpJixDIZofT/6MBcD0Zv6Pr0aOTP1/0Y9+Tc9Y3xzgZipVk8MSSS6rno5v\nLk9mGcR4OkH3EBAIUUMmIyaPyaSCZCjHWggRhoRkGNfm5CD014Ig9R30l1Ux\nw1ipMrdMKUhHnXMqFB/F96SIflgktXDU9TRKlNY/uEFP5v9Yj401tM9bn1u/\nW4JiL2ifpy9bC9lkZWB6+Hgbwnldwuu4vmBJ4Gw8/JveTSQKmM+U1wUQS1iM\nnG91ZAEgdOF55lkJskb/q7Q6fB3kYQXAA5iUwbfqJsNXzfpL1fDMTY9aLPc+\nJCwk\r\n=aRhQ\r\n-----END PGP SIGNATURE-----\r\n",
+    "shasum": "71a2885ac394a3c7a407c6ba0b920b52d73add99",
+    "tarball": "https://registry.npmjs.org/@angular/compiler-cli/-/compiler-cli-5.2.11.tgz",
+    "unpackedSize": 1017005
   },
-  "es2015": "./esm2015/compiler.js",
-  "homepage": "https://github.com/angular/angular#readme",
+  "homepage": "https://github.com/angular/angular/tree/master/packages/compiler-cli",
+  "keywords": [
+    "angular",
+    "compiler"
+  ],
   "license": "MIT",
-  "main": "./bundles/compiler.umd.js",
+  "main": "index.js",
   "maintainers": [
     {
       "name": "angular",
       "email": "devops+npm@angular.io"
     }
   ],
-  "module": "./esm5/compiler.js",
-  "name": "@angular/compiler",
+  "name": "@angular/compiler-cli",
   "optionalDependencies": {},
+  "peerDependencies": {
+    "@angular/compiler": "5.2.11",
+    "typescript": ">=2.4.2 <2.7"
+  },
   "readme": "Angular\n=======\n\nThe sources for this package are in the main [Angular](https://github.com/angular/angular) repo. Please file issues and pull requests against that repo.\n\nLicense: MIT\n",
   "readmeFilename": "README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/angular/angular.git"
   },
-  "typings": "./compiler.d.ts",
+  "typings": "index.d.ts",
   "version": "5.2.11"
 }
