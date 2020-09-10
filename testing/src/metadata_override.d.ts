@@ -6,8 +6,12 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * @module
- * @description
- * Entry point for all public APIs of this package.
+ * Type used for modifications to metadata
+ *
+ * @experimental
  */
-export * from './src/core';
+export declare type MetadataOverride<T> = {
+    add?: T;
+    remove?: T;
+    set?: T;
+};
