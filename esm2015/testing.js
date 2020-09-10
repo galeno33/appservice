@@ -3,8 +3,7 @@
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
-import { EventEmitter, Injectable } from '@angular/core';
-import { LocationStrategy } from '@angular/common';
+import { DirectiveResolver, NgModuleResolver, PipeResolver, ResourceLoader, core } from '@angular/compiler';
 
 /**
  * @fileoverview added by tsickle
@@ -18,161 +17,382 @@ import { LocationStrategy } from '@angular/common';
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * A spy for {\@link Location} that allows tests to fire simulated location events.
- *
- * \@experimental
+ * A mock implementation of {\@link ResourceLoader} that allows outgoing requests to be mocked
+ * and responded to within a single test, without going to the network.
  */
-class SpyLocation {
+class MockResourceLoader extends ResourceLoader {
     constructor() {
-        this.urlChanges = [];
-        this._history = [new LocationState('', '')];
-        this._historyIndex = 0;
-        /**
-         * \@internal
-         */
-        this._subject = new EventEmitter();
-        /**
-         * \@internal
-         */
-        this._baseHref = '';
-        /**
-         * \@internal
-         */
-        this._platformStrategy = /** @type {?} */ ((null));
+        super(...arguments);
+        this._expectations = [];
+        this._definitions = new Map();
+        this._requests = [];
     }
     /**
      * @param {?} url
      * @return {?}
      */
-    setInitialPath(url) { this._history[this._historyIndex].path = url; }
+    get(url) {
+        const /** @type {?} */ request = new _PendingRequest(url);
+        this._requests.push(request);
+        return request.getPromise();
+    }
     /**
+     * @return {?}
+     */
+    hasPendingRequests() { return !!this._requests.length; }
+    /**
+     * Add an expectation for the given URL. Incoming requests will be checked against
+     * the next expectation (in FIFO order). The `verifyNoOutstandingExpectations` method
+     * can be used to check if any expectations have not yet been met.
+     *
+     * The response given will be returned if the expectation matches.
      * @param {?} url
+     * @param {?} response
      * @return {?}
      */
-    setBaseHref(url) { this._baseHref = url; }
-    /**
-     * @return {?}
-     */
-    path() { return this._history[this._historyIndex].path; }
-    /**
-     * @param {?} path
-     * @param {?=} query
-     * @return {?}
-     */
-    isCurrentPathEqualTo(path, query = '') {
-        const /** @type {?} */ givenPath = path.endsWith('/') ? path.substring(0, path.length - 1) : path;
-        const /** @type {?} */ currPath = this.path().endsWith('/') ? this.path().substring(0, this.path().length - 1) : this.path();
-        return currPath == givenPath + (query.length > 0 ? ('?' + query) : '');
+    expect(url, response) {
+        const /** @type {?} */ expectation = new _Expectation(url, response);
+        this._expectations.push(expectation);
     }
     /**
-     * @param {?} pathname
-     * @return {?}
-     */
-    simulateUrlPop(pathname) {
-        this._subject.emit({ 'url': pathname, 'pop': true, 'type': 'popstate' });
-    }
-    /**
-     * @param {?} pathname
-     * @return {?}
-     */
-    simulateHashChange(pathname) {
-        // Because we don't prevent the native event, the browser will independently update the path
-        this.setInitialPath(pathname);
-        this.urlChanges.push('hash: ' + pathname);
-        this._subject.emit({ 'url': pathname, 'pop': true, 'type': 'hashchange' });
-    }
-    /**
+     * Add a definition for the given URL to return the given response. Unlike expectations,
+     * definitions have no order and will satisfy any matching request at any time. Also
+     * unlike expectations, unused definitions do not cause `verifyNoOutstandingExpectations`
+     * to return an error.
      * @param {?} url
+     * @param {?} response
      * @return {?}
      */
-    prepareExternalUrl(url) {
-        if (url.length > 0 && !url.startsWith('/')) {
-            url = '/' + url;
+    when(url, response) { this._definitions.set(url, response); }
+    /**
+     * Process pending requests and verify there are no outstanding expectations. Also fails
+     * if no requests are pending.
+     * @return {?}
+     */
+    flush() {
+        if (this._requests.length === 0) {
+            throw new Error('No pending requests to flush');
         }
-        return this._baseHref + url;
+        do {
+            this._processRequest(/** @type {?} */ ((this._requests.shift())));
+        } while (this._requests.length > 0);
+        this.verifyNoOutstandingExpectations();
     }
     /**
-     * @param {?} path
-     * @param {?=} query
+     * Throw an exception if any expectations have not been satisfied.
      * @return {?}
      */
-    go(path, query = '') {
-        path = this.prepareExternalUrl(path);
-        if (this._historyIndex > 0) {
-            this._history.splice(this._historyIndex + 1);
+    verifyNoOutstandingExpectations() {
+        if (this._expectations.length === 0)
+            return;
+        const /** @type {?} */ urls = [];
+        for (let /** @type {?} */ i = 0; i < this._expectations.length; i++) {
+            const /** @type {?} */ expectation = this._expectations[i];
+            urls.push(expectation.url);
         }
-        this._history.push(new LocationState(path, query));
-        this._historyIndex = this._history.length - 1;
-        const /** @type {?} */ locationState = this._history[this._historyIndex - 1];
-        if (locationState.path == path && locationState.query == query) {
+        throw new Error(`Unsatisfied requests: ${urls.join(', ')}`);
+    }
+    /**
+     * @param {?} request
+     * @return {?}
+     */
+    _processRequest(request) {
+        const /** @type {?} */ url = request.url;
+        if (this._expectations.length > 0) {
+            const /** @type {?} */ expectation = this._expectations[0];
+            if (expectation.url == url) {
+                remove(this._expectations, expectation);
+                request.complete(expectation.response);
+                return;
+            }
+        }
+        if (this._definitions.has(url)) {
+            const /** @type {?} */ response = this._definitions.get(url);
+            request.complete(response == null ? null : response);
             return;
         }
-        const /** @type {?} */ url = path + (query.length > 0 ? ('?' + query) : '');
-        this.urlChanges.push(url);
-        this._subject.emit({ 'url': url, 'pop': false });
+        throw new Error(`Unexpected request ${url}`);
     }
-    /**
-     * @param {?} path
-     * @param {?=} query
-     * @return {?}
-     */
-    replaceState(path, query = '') {
-        path = this.prepareExternalUrl(path);
-        const /** @type {?} */ history = this._history[this._historyIndex];
-        if (history.path == path && history.query == query) {
-            return;
-        }
-        history.path = path;
-        history.query = query;
-        const /** @type {?} */ url = path + (query.length > 0 ? ('?' + query) : '');
-        this.urlChanges.push('replace: ' + url);
-    }
-    /**
-     * @return {?}
-     */
-    forward() {
-        if (this._historyIndex < (this._history.length - 1)) {
-            this._historyIndex++;
-            this._subject.emit({ 'url': this.path(), 'pop': true });
-        }
-    }
-    /**
-     * @return {?}
-     */
-    back() {
-        if (this._historyIndex > 0) {
-            this._historyIndex--;
-            this._subject.emit({ 'url': this.path(), 'pop': true });
-        }
-    }
-    /**
-     * @param {?} onNext
-     * @param {?=} onThrow
-     * @param {?=} onReturn
-     * @return {?}
-     */
-    subscribe(onNext, onThrow, onReturn) {
-        return this._subject.subscribe({ next: onNext, error: onThrow, complete: onReturn });
-    }
+}
+class _PendingRequest {
     /**
      * @param {?} url
+     */
+    constructor(url) {
+        this.url = url;
+        this.promise = new Promise((res, rej) => {
+            this.resolve = res;
+            this.reject = rej;
+        });
+    }
+    /**
+     * @param {?} response
      * @return {?}
      */
-    normalize(url) { return /** @type {?} */ ((null)); }
-}
-SpyLocation.decorators = [
-    { type: Injectable },
-];
-/** @nocollapse */
-SpyLocation.ctorParameters = () => [];
-class LocationState {
+    complete(response) {
+        if (response == null) {
+            this.reject(`Failed to load ${this.url}`);
+        }
+        else {
+            this.resolve(response);
+        }
+    }
     /**
-     * @param {?} path
-     * @param {?} query
+     * @return {?}
      */
-    constructor(path, query) {
-        this.path = path;
-        this.query = query;
+    getPromise() { return this.promise; }
+}
+class _Expectation {
+    /**
+     * @param {?} url
+     * @param {?} response
+     */
+    constructor(url, response) {
+        this.url = url;
+        this.response = response;
+    }
+}
+/**
+ * @template T
+ * @param {?} list
+ * @param {?} el
+ * @return {?}
+ */
+function remove(list, el) {
+    const /** @type {?} */ index = list.indexOf(el);
+    if (index > -1) {
+        list.splice(index, 1);
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+class MockSchemaRegistry {
+    /**
+     * @param {?} existingProperties
+     * @param {?} attrPropMapping
+     * @param {?} existingElements
+     * @param {?} invalidProperties
+     * @param {?} invalidAttributes
+     */
+    constructor(existingProperties, attrPropMapping, existingElements, invalidProperties, invalidAttributes) {
+        this.existingProperties = existingProperties;
+        this.attrPropMapping = attrPropMapping;
+        this.existingElements = existingElements;
+        this.invalidProperties = invalidProperties;
+        this.invalidAttributes = invalidAttributes;
+    }
+    /**
+     * @param {?} tagName
+     * @param {?} property
+     * @param {?} schemas
+     * @return {?}
+     */
+    hasProperty(tagName, property, schemas) {
+        const /** @type {?} */ value = this.existingProperties[property];
+        return value === void 0 ? true : value;
+    }
+    /**
+     * @param {?} tagName
+     * @param {?} schemaMetas
+     * @return {?}
+     */
+    hasElement(tagName, schemaMetas) {
+        const /** @type {?} */ value = this.existingElements[tagName.toLowerCase()];
+        return value === void 0 ? true : value;
+    }
+    /**
+     * @return {?}
+     */
+    allKnownElementNames() { return Object.keys(this.existingElements); }
+    /**
+     * @param {?} selector
+     * @param {?} property
+     * @param {?} isAttribute
+     * @return {?}
+     */
+    securityContext(selector, property, isAttribute) {
+        return core.SecurityContext.NONE;
+    }
+    /**
+     * @param {?} attrName
+     * @return {?}
+     */
+    getMappedPropName(attrName) { return this.attrPropMapping[attrName] || attrName; }
+    /**
+     * @return {?}
+     */
+    getDefaultComponentElementName() { return 'ng-component'; }
+    /**
+     * @param {?} name
+     * @return {?}
+     */
+    validateProperty(name) {
+        if (this.invalidProperties.indexOf(name) > -1) {
+            return { error: true, msg: `Binding to property '${name}' is disallowed for security reasons` };
+        }
+        else {
+            return { error: false };
+        }
+    }
+    /**
+     * @param {?} name
+     * @return {?}
+     */
+    validateAttribute(name) {
+        if (this.invalidAttributes.indexOf(name) > -1) {
+            return {
+                error: true,
+                msg: `Binding to attribute '${name}' is disallowed for security reasons`
+            };
+        }
+        else {
+            return { error: false };
+        }
+    }
+    /**
+     * @param {?} propName
+     * @return {?}
+     */
+    normalizeAnimationStyleProperty(propName) { return propName; }
+    /**
+     * @param {?} camelCaseProp
+     * @param {?} userProvidedProp
+     * @param {?} val
+     * @return {?}
+     */
+    normalizeAnimationStyleValue(camelCaseProp, userProvidedProp, val) {
+        return { error: /** @type {?} */ ((null)), value: val.toString() };
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+/**
+ * An implementation of {\@link DirectiveResolver} that allows overriding
+ * various properties of directives.
+ */
+class MockDirectiveResolver extends DirectiveResolver {
+    /**
+     * @param {?} reflector
+     */
+    constructor(reflector) {
+        super(reflector);
+        this._directives = new Map();
+    }
+    /**
+     * @param {?} type
+     * @param {?=} throwIfNotFound
+     * @return {?}
+     */
+    resolve(type, throwIfNotFound = true) {
+        return this._directives.get(type) || super.resolve(type, throwIfNotFound);
+    }
+    /**
+     * Overrides the {\@link core.Directive} for a directive.
+     * @param {?} type
+     * @param {?} metadata
+     * @return {?}
+     */
+    setDirective(type, metadata) {
+        this._directives.set(type, metadata);
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+class MockNgModuleResolver extends NgModuleResolver {
+    /**
+     * @param {?} reflector
+     */
+    constructor(reflector) {
+        super(reflector);
+        this._ngModules = new Map();
+    }
+    /**
+     * Overrides the {\@link NgModule} for a module.
+     * @param {?} type
+     * @param {?} metadata
+     * @return {?}
+     */
+    setNgModule(type, metadata) {
+        this._ngModules.set(type, metadata);
+    }
+    /**
+     * Returns the {\@link NgModule} for a module:
+     * - Set the {\@link NgModule} to the overridden view when it exists or fallback to the
+     * default
+     * `NgModuleResolver`, see `setNgModule`.
+     * @param {?} type
+     * @param {?=} throwIfNotFound
+     * @return {?}
+     */
+    resolve(type, throwIfNotFound = true) {
+        return this._ngModules.get(type) || /** @type {?} */ ((super.resolve(type, throwIfNotFound)));
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+class MockPipeResolver extends PipeResolver {
+    /**
+     * @param {?} refector
+     */
+    constructor(refector) {
+        super(refector);
+        this._pipes = new Map();
+    }
+    /**
+     * Overrides the {\@link Pipe} for a pipe.
+     * @param {?} type
+     * @param {?} metadata
+     * @return {?}
+     */
+    setPipe(type, metadata) { this._pipes.set(type, metadata); }
+    /**
+     * Returns the {\@link Pipe} for a pipe:
+     * - Set the {\@link Pipe} to the overridden view when it exists or fallback to the
+     * default
+     * `PipeResolver`, see `setPipe`.
+     * @param {?} type
+     * @param {?=} throwIfNotFound
+     * @return {?}
+     */
+    resolve(type, throwIfNotFound = true) {
+        let /** @type {?} */ metadata = this._pipes.get(type);
+        if (!metadata) {
+            metadata = /** @type {?} */ ((super.resolve(type, throwIfNotFound)));
+        }
+        return metadata;
     }
 }
 
@@ -188,124 +408,19 @@ class LocationState {
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * A mock implementation of {\@link LocationStrategy} that allows tests to fire simulated
- * location events.
+ * @module
+ * @description
+ * Entry point for all APIs of the compiler package.
  *
- * \@stable
- */
-class MockLocationStrategy extends LocationStrategy {
-    constructor() {
-        super();
-        this.internalBaseHref = '/';
-        this.internalPath = '/';
-        this.internalTitle = '';
-        this.urlChanges = [];
-        /**
-         * \@internal
-         */
-        this._subject = new EventEmitter();
-    }
-    /**
-     * @param {?} url
-     * @return {?}
-     */
-    simulatePopState(url) {
-        this.internalPath = url;
-        this._subject.emit(new _MockPopStateEvent(this.path()));
-    }
-    /**
-     * @param {?=} includeHash
-     * @return {?}
-     */
-    path(includeHash = false) { return this.internalPath; }
-    /**
-     * @param {?} internal
-     * @return {?}
-     */
-    prepareExternalUrl(internal) {
-        if (internal.startsWith('/') && this.internalBaseHref.endsWith('/')) {
-            return this.internalBaseHref + internal.substring(1);
-        }
-        return this.internalBaseHref + internal;
-    }
-    /**
-     * @param {?} ctx
-     * @param {?} title
-     * @param {?} path
-     * @param {?} query
-     * @return {?}
-     */
-    pushState(ctx, title, path, query) {
-        this.internalTitle = title;
-        const /** @type {?} */ url = path + (query.length > 0 ? ('?' + query) : '');
-        this.internalPath = url;
-        const /** @type {?} */ externalUrl = this.prepareExternalUrl(url);
-        this.urlChanges.push(externalUrl);
-    }
-    /**
-     * @param {?} ctx
-     * @param {?} title
-     * @param {?} path
-     * @param {?} query
-     * @return {?}
-     */
-    replaceState(ctx, title, path, query) {
-        this.internalTitle = title;
-        const /** @type {?} */ url = path + (query.length > 0 ? ('?' + query) : '');
-        this.internalPath = url;
-        const /** @type {?} */ externalUrl = this.prepareExternalUrl(url);
-        this.urlChanges.push('replace: ' + externalUrl);
-    }
-    /**
-     * @param {?} fn
-     * @return {?}
-     */
-    onPopState(fn) { this._subject.subscribe({ next: fn }); }
-    /**
-     * @return {?}
-     */
-    getBaseHref() { return this.internalBaseHref; }
-    /**
-     * @return {?}
-     */
-    back() {
-        if (this.urlChanges.length > 0) {
-            this.urlChanges.pop();
-            const /** @type {?} */ nextUrl = this.urlChanges.length > 0 ? this.urlChanges[this.urlChanges.length - 1] : '';
-            this.simulatePopState(nextUrl);
-        }
-    }
-    /**
-     * @return {?}
-     */
-    forward() { throw 'not implemented'; }
-}
-MockLocationStrategy.decorators = [
-    { type: Injectable },
-];
-/** @nocollapse */
-MockLocationStrategy.ctorParameters = () => [];
-class _MockPopStateEvent {
-    /**
-     * @param {?} newUrl
-     */
-    constructor(newUrl) {
-        this.newUrl = newUrl;
-        this.pop = true;
-        this.type = 'popstate';
-    }
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
- */
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * <div class="callout is-critical">
+ *   <header>Unstable APIs</header>
+ *   <p>
+ *     All compiler apis are currently considered experimental and private!
+ *   </p>
+ *   <p>
+ *     We expect the APIs in this package to keep on changing. Do not rely on them.
+ *   </p>
+ * </div>
  */
 
 /**
@@ -332,8 +447,16 @@ class _MockPopStateEvent {
  * @suppress {checkTypes} checked by tsc
  */
 /**
- * Generated bundle index. Do not edit.
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
  */
+// This file is not used to build this module. It is only used during editing
+// by the TypeScript language service and during build for verification. `ngc`
+// replaces this file with production index.ts when it rewrites private symbol
+// names.
 
-export { SpyLocation, MockLocationStrategy };
+export { MockResourceLoader, MockSchemaRegistry, MockDirectiveResolver, MockNgModuleResolver, MockPipeResolver };
 //# sourceMappingURL=testing.js.map
